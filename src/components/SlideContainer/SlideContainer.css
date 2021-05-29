@@ -1,0 +1,21 @@
+.SlideContainer {
+  display: flex;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  object-fit: contain;
+  overflow: hidden;
+}
+
+.SlideContainer.previousSlide {
+  left: -100%;
+}
+
+.SlideContainer.nextSlide {
+  right: -100%
+}
+
+.SlideContainer.currentSlide {
+  right: 0;
+}

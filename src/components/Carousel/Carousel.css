@@ -1,0 +1,11 @@
+.Carousel {
+  width: 600px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: baseline;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 5px;
+  overflow: hidden;
+}
