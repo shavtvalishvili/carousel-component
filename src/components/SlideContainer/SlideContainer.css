@@ -3,19 +3,27 @@
   position: absolute;
   height: 100%;
   width: 100%;
+  align-items: center;
   justify-content: center;
-  object-fit: contain;
   overflow: hidden;
+  user-select: none;
+  border-radius: 2px;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none; 
 }
 
-.SlideContainer.previousSlide {
-  left: -100%;
+.SlideContainer img, .SlideContainer video {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
 }
 
-.SlideContainer.nextSlide {
-  right: -100%
-}
-
-.SlideContainer.currentSlide {
-  right: 0;
+.SlideContainer * {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
