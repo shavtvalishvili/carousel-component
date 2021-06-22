@@ -10,6 +10,8 @@ module.exports = {
     },
     devtool: "source-map",
     devServer: {
+      // host: "192.168.100.8",
+      // port: 3000,
       contentBase: "./public",
       hot: true,
       open: true
