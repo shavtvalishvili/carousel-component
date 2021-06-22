@@ -1,0 +1,17 @@
+.NavigationButton {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 20%);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+  font-size: x-large;
+  color: white;
+  user-select: none;
+  transition: opacity 600ms ease-in-out;
+}
