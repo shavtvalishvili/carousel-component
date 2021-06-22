@@ -1,0 +1,10 @@
+.PreviewSlidesContainer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 20%);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+  transition: opacity 600ms ease-in-out;
+}
