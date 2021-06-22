@@ -1,9 +1,0 @@
-.SlidesContainer {
-  display: flex;
-  position: relative;
-  height: 85%;
-  width: 100%;
-  background-color: rgb(150, 150, 150);
-  justify-content: center;
-  align-items: center;
-}
