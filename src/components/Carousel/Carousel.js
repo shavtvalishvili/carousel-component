@@ -1,5 +1,5 @@
 import React from "react"
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import "./Carousel.css"
 import MainSlidesContainer from "../MainSlidesContainer/MainSlidesContainer"
 import PreviewSlidesContainer from "../PreviewSlidesContainer/PreviewSlidesContainer"
@@ -13,6 +13,26 @@ const Carousel = ({
   slideBackgroundColor,
   transitions
 }) => {
+  const convertToArray = (object) => {
+    return !Array.isArray(object) ? [object] : object;
+  }
+
+  const toggleDetails = () => {
+    if (animationFinishedRef.current && !detailsVisible) {
+      animationFinishedRef.current = false;
+      setDetailsVisibility(true);
+      setTimeout(() => setDetailsFade(false), 0);
+      setTimeout(() => {animationFinishedRef.current = true;}, 600);
+    } else if (animationFinishedRef.current && detailsVisible) {
+      animationFinishedRef.current = false;
+      setDetailsFade(true);
+      setTimeout(() => setDetailsVisibility(false), 600);
+      setTimeout(() => {animationFinishedRef.current = true;}, 600);
+    }
+  }
+  
+  mainSlideElements = convertToArray(mainSlideElements);
+  previewSlideElements = convertToArray(previewSlideElements);
   const range = [...Array(mainSlideElements.length).keys()];
   const mainSlidesData = range.map(id => (
     {
@@ -22,22 +42,19 @@ const Carousel = ({
     }
   ));
 
-  const [animationFinished, setAnimationFinished] = useState(true);
-  const [detailsVisibility, setDetailsVisibility] = useState(false);
-  const [detailsFade, setDetailsFade] = useState(true);
-  const toggleDetails = () => {
-    if (animationFinished && !detailsVisibility) {
-      setAnimationFinished(false);
-      setDetailsVisibility(true);
-      setTimeout(() => setDetailsFade(false), 1);
-      setTimeout(() => setAnimationFinished(true), 601);
-    } else if (animationFinished && detailsVisibility) {
-      setAnimationFinished(false);
-      setDetailsFade(true);
-      setTimeout(() => setDetailsVisibility(false), 600);
-      setTimeout(() => setAnimationFinished(true), 600);
+  const [displaySlides, setDisplaySlides] = useState({
+    primarySlide: {
+      id: 0,
+      state: "current"
+    },
+    secondarySlide: {
+      id: 1 % mainSlidesData.length,
+      state: "next"
     }
-  }
+  });
+  const animationFinishedRef = useRef(true);
+  const [detailsVisible, setDetailsVisibility] = useState(false);
+  const [detailsFade, setDetailsFade] = useState(true);
 
   return (
     <div
@@ -46,18 +63,19 @@ const Carousel = ({
     >
       <MainSlidesContainer
         slidesData={mainSlidesData}
+        displaySlides={displaySlides}
+        setDisplaySlides={setDisplaySlides}
         toggleDetails={toggleDetails}
         transitions={transitions}
-        navigationVisible={detailsVisibility}
+        navigationVisible={detailsVisible}
         navigationFade={detailsFade}
         slideBackgroundColor={slideBackgroundColor}
       />
       <PreviewSlidesContainer
         previewSlideElements={previewSlideElements}
-        visible={detailsVisibility}
+        visible={detailsVisible}
         fade={detailsFade}
-        // currentSlideIdx={mainSlides.reduce((accumulator, currentValue) =>
-        //   (currentValue.className === "currentSlide" ? currentValue.id : accumulator), 0)}
+        currentSlideIdx={displaySlides.primarySlide.id}
         heightPct={previewSlidesHeightPct}
       />
     </div>
