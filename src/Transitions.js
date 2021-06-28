@@ -1,5 +1,5 @@
 export const defaultTransition = [
-  {property: "left", surroundingStrings: ["", "%"], previous: -100, current: 0, next: 100},
+  {property: "left", surroundingStrings: ["", "%"], previous: -80, current: 0, next: 100},
   {property: "opacity", surroundingStrings: ["", "%"], previous: 0, current: 100, next: 0},
   {property: "width", surroundingStrings: ["", "%"], previous: 80, current: 100, next: 80},
   {property: "height", surroundingStrings: ["", "%"], previous: 80, current: 100, next: 80}
