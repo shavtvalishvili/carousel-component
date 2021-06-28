@@ -1,46 +1,53 @@
 import React from "react"
-import { useState, useRef } from 'react'
+import { useRef } from "react"
 import "./MainSlidesContainer.css"
 import SlideContainer from "../SlideContainer/SlideContainer"
 import NavigationButton from "../NavigationButton/NavigationButton"
 
 const MainSlidesContainer = ({
   slidesData,
+  displaySlides,
+  setDisplaySlides,
   toggleDetails,
   transitions,
   navigationVisible,
   navigationFade,
-  slideBackgroundColor
+  slideBackgroundColor,
+  backgroundColor = "rgb(240, 240, 240)"
 }) => {
-  const [outputSlides, setOutputSlides] = useState(
-    {
-      previousSlide: slidesData.length - 1,
-      currentSlide: 0,
-      nextSlide: 1
-    }
-  );
+  const CLICK_THRESHOLD = 1; // px
+  const SWIPE_THRESHOLD = 1 / 3; // portion of the slide width
+  const TRANSITION_TIME_AND_FUNCTION = "200ms ease-in-out";
 
-  const mainSlidesContainerRef = useRef();
+  const mainSlidesContainterRef = useRef();
+  const primarySlideRef = useRef();
+  const secondarySlideRef = useRef();
+  const secondarySlideStateRef = useRef("next");
+
   const interactionStartRef = useRef(0);
   const interactionEndRef = useRef(0);
+
   const touchEventInvokedRef = useRef(false);
-  const clickThreashold = 5;
-  const swipeThreshold = 1 / 3;
+
 
   const handleInteractionStart = (event) => {
     if (touchEventInvokedRef.current) return;
     else if (event.type === "touchstart") touchEventInvokedRef.current = true;
-
+    
     interactionStartRef.current = 
       touchEventInvokedRef.current ? event.touches[0].clientX : event.clientX;
     interactionEndRef.current = interactionStartRef.current;
-    slidesData[outputSlides.previousSlide].reference.current.style.transition = "";
-    slidesData[outputSlides.currentSlide].reference.current.style.transition = "";
-    slidesData[outputSlides.nextSlide].reference.current.style.transition = "";
 
-    window.addEventListener(
-      touchEventInvokedRef.current ? "touchmove" : "mousemove", handleInteractionMove
-    );
+    primarySlideRef.current.style.transition = "";
+    secondarySlideRef.current.style.transition = "";
+
+    if (event.target.className.includes("NavigationButton")) {
+      adjustSecondarySlide(event.target.className.includes("right") ? -1 : 1);
+    } else {
+      window.addEventListener(
+        touchEventInvokedRef.current ? "touchmove" : "mousemove", handleInteractionMove
+      );
+    }
     window.addEventListener(
       touchEventInvokedRef.current ? "touchend" : "mouseup", handleInteractionEnd
     );
@@ -50,18 +57,45 @@ const MainSlidesContainer = ({
     const interactionStart = interactionStartRef.current;
     const currentX = touchEventInvokedRef.current ? event.touches[0].clientX : event.clientX;
     interactionEndRef.current = currentX;
+    if (slidesData.length === 1) return;
 
     const xDifference = currentX - interactionStart;
-    const transitionProgress = Math.abs(xDifference) / mainSlidesContainerRef.current.clientWidth;
+    adjustSecondarySlide(xDifference);
+    const transitionProgress = Math.abs(xDifference) / mainSlidesContainterRef.current.clientWidth;
 
     for (let i = 0; i < transitions.length; i++) {
       const tr = transitions[i];
-      slidesData[outputSlides.previousSlide].reference.current.style[tr.property]
-        = tr.surroundingStrings.join(tr.previous + transitionProgress * (xDifference < 0 ? 0 : tr.current - tr.previous));
-      slidesData[outputSlides.currentSlide].reference.current.style[tr.property]
-        = tr.surroundingStrings.join(tr.current + transitionProgress * ((xDifference < 0 ? tr.previous : tr.next) - tr.current));
-      slidesData[outputSlides.nextSlide].reference.current.style[tr.property]
-        = tr.surroundingStrings.join(tr.next + transitionProgress * (xDifference < 0 ? tr.current - tr.next : 0));
+      const newSecondarySlideTransitionValue = 
+        secondarySlideStateRef.current === "previous" ?
+          tr.previous + transitionProgress * (xDifference < 0 ? 0 : tr.current - tr.previous)
+        :
+          tr.next + transitionProgress * (xDifference < 0 ? tr.current - tr.next : 0);
+      primarySlideRef.current.style[tr.property] = 
+        tr.surroundingStrings.join(tr.current + transitionProgress * ((xDifference < 0 ? tr.previous : tr.next) - tr.current));
+      secondarySlideRef.current.style[tr.property] = tr.surroundingStrings.join(newSecondarySlideTransitionValue);
+    }
+  }
+
+  const adjustSecondarySlide = (xDifference) => {
+    const tempDisplaySlides = {
+      primarySlide: displaySlides.primarySlide,
+      secondarySlide: displaySlides.secondarySlide
+    }
+
+    if (xDifference < 0 && secondarySlideStateRef.current === "previous") {
+      tempDisplaySlides.secondarySlide = {
+        id: (displaySlides.primarySlide.id + 1) % slidesData.length,
+        state: "next"
+      }
+      secondarySlideStateRef.current = "next";
+      setDisplaySlides(tempDisplaySlides);
+    } else if (xDifference > 0 && secondarySlideStateRef.current === "next") {
+      tempDisplaySlides.secondarySlide = {
+        id: (displaySlides.primarySlide.id + slidesData.length - 1) % slidesData.length,
+        state: "previous"
+      }
+      secondarySlideStateRef.current = "previous";
+      setDisplaySlides(tempDisplaySlides);
     }
   }
 
@@ -75,91 +109,83 @@ const MainSlidesContainer = ({
       touchEventInvokedRef.current ? "touchend" : "mouseup", handleInteractionEnd
     );
 
+    const xDifference = interactionEnd - interactionStart;
     setTransitions();
 
-    const xDifference = interactionEnd - interactionStart;
-    if (Math.abs(xDifference) < clickThreashold) {
+    if (event.target.className.includes("NavigationButton")) {
+      updateOutputSlides(event.target.className.includes("right") ? -1 : 1);
+    } else if (Math.abs(xDifference) < CLICK_THRESHOLD) {
       toggleDetails();
-    } else if (Math.abs(xDifference) > mainSlidesContainerRef.current.clientWidth * swipeThreshold) {
+    } else if (Math.abs(xDifference) > mainSlidesContainterRef.current.clientWidth * SWIPE_THRESHOLD) {
       updateOutputSlides(xDifference);
     } else {
       for (let i = 0; i < transitions.length; i++) {
         const tr = transitions[i];
-        slidesData[outputSlides.previousSlide].reference.current.style[tr.property] = tr.surroundingStrings.join(tr.previous);
-        slidesData[outputSlides.currentSlide].reference.current.style[tr.property] = tr.surroundingStrings.join(tr.current);
-        slidesData[outputSlides.nextSlide].reference.current.style[tr.property] = tr.surroundingStrings.join(tr.next);
+        primarySlideRef.current.style[tr.property] = tr.surroundingStrings.join(tr.current);
+        secondarySlideRef.current.style[tr.property] = tr.surroundingStrings.join(tr[secondarySlideStateRef.current]);
       }
     }
     if (touchEventInvokedRef.current) touchEventInvokedRef.current = false;
   }
 
   const setTransitions = () => {
-    const transitionProperty = transitions.map(transition => `${transition.property} 200ms ease-in-out`).join(',');
-    slidesData[outputSlides.previousSlide].reference.current.style.transition = transitionProperty;
-    slidesData[outputSlides.currentSlide].reference.current.style.transition = transitionProperty;
-    slidesData[outputSlides.nextSlide].reference.current.style.transition = transitionProperty;
+    const transitionProperty = 
+      transitions.map(transition => `${transition.property} ${TRANSITION_TIME_AND_FUNCTION}`).join(',');
+    secondarySlideRef.current.style.transition = transitionProperty;
+    primarySlideRef.current.style.transition = transitionProperty;
   }
 
   const updateOutputSlides = (xDifference) => {
-    if (xDifference < 0) {
-      setOutputSlides(
-        {
-          previousSlide: outputSlides.currentSlide,
-          currentSlide: outputSlides.nextSlide,
-          nextSlide: (outputSlides.nextSlide + 1) % slidesData.length
-        }
-      );
-    } else {
-      setOutputSlides(
-        {
-          previousSlide: (outputSlides.previousSlide - 1 + slidesData.length) % slidesData.length,
-          currentSlide: outputSlides.previousSlide,
-          nextSlide: outputSlides.currentSlide
-        }
-      );
-    }
+    setDisplaySlides({
+      primarySlide: {
+        id: 
+          xDifference < 0 ? (displaySlides.primarySlide.id + 1) % slidesData.length
+          : (displaySlides.primarySlide.id + slidesData.length - 1) % slidesData.length,
+        state: "current"
+      },
+      secondarySlide: {
+        id: displaySlides.primarySlide.id,
+        state: 
+          xDifference < 0 ? "previous"
+          : "next"
+      }
+    });
+    secondarySlideStateRef.current = xDifference < 0 ? "previous" : "next";
   }
 
   return (
     <div
       className="MainSlidesContainer"
-      ref={mainSlidesContainerRef}
+      style={{backgroundColor: backgroundColor}}
+      ref={mainSlidesContainterRef}
     >
       <SlideContainer
-        key={slidesData.length === 2 ? slidesData.length : outputSlides.previousSlide}
-        slideData={slidesData[outputSlides.previousSlide]}
-        state={"previous"}
+        key={slidesData.length === 1 ? slidesData.length : displaySlides.primarySlide.id}
+        slideData={slidesData[displaySlides.primarySlide.id]}
+        state={displaySlides.primarySlide.state}
         transitions={transitions}
         handleInteractionStart={handleInteractionStart}
         backgroundColor={slideBackgroundColor}
-      />
+        reference={primarySlideRef}
+      />  
       <SlideContainer
-        key={outputSlides.currentSlide}
-        slideData={slidesData[outputSlides.currentSlide]}
-        state={"current"}
+        key={displaySlides.secondarySlide.id}
+        slideData={slidesData[displaySlides.secondarySlide.id]}
+        state={displaySlides.secondarySlide.state}
         transitions={transitions}
         handleInteractionStart={handleInteractionStart}
         backgroundColor={slideBackgroundColor}
-      />
-      <SlideContainer
-        key={outputSlides.nextSlide}
-        slideData={slidesData[outputSlides.nextSlide]}
-        state={"next"}
-        transitions={transitions}
-        handleInteractionStart={handleInteractionStart}
-        backgroundColor={slideBackgroundColor}
+        reference={secondarySlideRef}
       />
       <NavigationButton
         direction={1}
-        setTransitions={setTransitions}
-        updateOutputSlides={updateOutputSlides}
+        onInteractionStart={handleInteractionStart}
         visible={navigationVisible}
         fade={navigationFade}
       />
       <NavigationButton
         direction={-1}
-        setTransitions={setTransitions}
-        updateOutputSlides={updateOutputSlides}
+        onInteractionStart={handleInteractionStart}
         visible={navigationVisible}
         fade={navigationFade}
       />
