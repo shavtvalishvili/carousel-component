@@ -1,4 +1,5 @@
 import React from "react"
+import { useEffect } from "react"
 import "./SlideContainer.css"
 
 const SlideContainer = ({
@@ -6,23 +7,26 @@ const SlideContainer = ({
   state,
   transitions,
   handleInteractionStart,
-  backgroundColor
+  backgroundColor,
+  reference
 }) => {
-  const style = {backgroundColor: backgroundColor};
-  for (let i = 0; i < transitions.length; i++) {
-    const tr = transitions[i];
-    style[tr.property] = tr.surroundingStrings.join(tr[state]);
-  }
-  style.zIndex = state === "current" ? 1 : 0;
+  useEffect(() => {
+    const style = {};
+    for (let i = 0; i < transitions.length; i++) {
+      const tr = transitions[i];
+      style[tr.property] = tr.surroundingStrings.join(tr[state]);
+    }
+    style.zIndex = state === "current" ? 1 : 0;
+    Object.assign(reference.current.style, style);
+  }, [state]);
   
   return (
     <div
-      value={slideData.id}
       className={"SlideContainer"}
-      style={style}
+      style={{backgroundColor: backgroundColor}}
       onMouseDown={state === "current" ? handleInteractionStart : null}
       onTouchStart={state === "current" ? handleInteractionStart : null}
-      ref={slideData.reference}
+      ref={reference}
     >
       {slideData.reactElement}
     </div>
