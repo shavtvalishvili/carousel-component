@@ -1,25 +1,20 @@
 import React from "react"
 import "./NavigationButton.css"
 
-const NavigationButton = ({direction, setTransitions, updateOutputSlides, visible, fade}) => {
-  const right = -1;
-  const left = 1;
-  const borderMargin = 5;
+const NavigationButton = ({direction, onInteractionStart, visible, fade}) => {
+  const RIGHT = -1;
+  const LEFT = 1;
   const style = {opacity: fade ? 0 : 1};
   if (!visible) style.display = "none";
-  if (direction === right) style.right = `${borderMargin}px`;
-  else style.left = `${borderMargin}px`;
 
   return (
     <div
-      onClick={() => {
-        setTransitions()
-        updateOutputSlides(direction)
-      }}
-      className="NavigationButton"
+      onTouchStart={onInteractionStart}
+      onMouseDown={onInteractionStart}
+      className={`NavigationButton ${direction === RIGHT? "right" : "left"}`}
       style={style}
     >
-      {direction === left ? '<' : '>'}
+      {direction === LEFT ? '<' : '>'}
     </div>
   )
 }
