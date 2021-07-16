@@ -1,6 +1,14 @@
 # Carousel Component
 A React application with a web carousel component. This project represents a demonstration of the carousel component and an easy example of its creation.
 
+## Features:
+  * Navigation with buttons, mouse or touch swipes and slide selection from preview slides
+  * Click to show/hide preview slides and navigation buttons
+  * Infinite loop swiping
+  * Responsive wih user adjustable dimensions
+  * Any html content support in slides
+  * Multiple predefined slide change transitions
+
 ## Requirements:
 * Node.js
   * Download and install from: https://nodejs.org/en/
@@ -9,13 +17,17 @@ A React application with a web carousel component. This project represents a dem
     npm install
     ```
 
-## Features:
-  * Navigation with buttons, mouse or touch swipes and slide selection from preview slides
-  * Click to show/hide preview slides and navigation buttons
-  * Infinite loop swiping
-  * Responsive wih user adjustable dimensions
-  * Any html content support in slides
-  * Multiple predefined slide change transitions
+## How to run:
+* To build the project run this command from the root directory:
+  ```bash
+  npm run build
+  ```
+
+* To start the web application run this command from the project root directory:
+  ```bash
+  npm start
+  ```
+  By default the app runs on `localhost:8080`
 
 ## Creation:
 User shall pass props to carousel component for defining content and further customizing the carousel
@@ -87,15 +99,3 @@ User shall pass props to carousel component for defining content and further cus
     />
     ```
   * See a full example of carousel component creation in the source code.
-
-## How to run:
-* To build the project run this command from the root directory:
-  ```bash
-  npm run build
-  ```
-
-* To start the web application run this command from the project root directory:
-  ```bash
-  npm start
-  ```
-  By default the app runs on `localhost:8080`
