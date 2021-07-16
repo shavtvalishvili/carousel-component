@@ -1,7 +1,7 @@
 const path = require("path");
 
 module.exports = {
-    mode: "development",
+    mode: "production",
     entry: "./src/index.js",
     output: {
       path: __dirname + "/public",
@@ -10,8 +10,6 @@ module.exports = {
     },
     devtool: "source-map",
     devServer: {
-      // host: "192.168.100.8",
-      // port: 3000,
       contentBase: "./public",
       hot: true,
       open: true
