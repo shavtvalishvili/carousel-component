@@ -30,7 +30,7 @@ const App = () => {
     <img className="previewContent" src="/assets/clouds4.jpg"></img>
     <img className="previewContent" src="/assets/clouds5.jpg"></img>
     <img className="previewContent" src="/assets/clouds6.jpg"></img>
-    <img className="previewContent" src="/assets/clouds7_moment.jpg"></img>
+    <img className="previewContent" src="/assets/clouds7_thumbnail.jpg"></img>
     <img className="previewContent" src="/assets/clouds8.jpg"></img>
     <img className="previewContent" src="/assets/clouds9.jpg"></img>
   </CarouselContent>
