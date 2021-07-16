@@ -17,14 +17,6 @@ A React application with a web carousel component. This project represents a dem
   * Any html content support in slides
   * Multiple predefined slide change transitions
 
-## Requirements:
-* Node.js
-  * Download and install from: https://nodejs.org/en/
-  * Run the following command from the project root directory:
-    ```bash
-    npm install
-    ```
-
 ## Creation:
 User shall pass props to carousel component for defining content and further customizing the carousel
   * ### Imports
