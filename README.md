@@ -32,17 +32,13 @@ User shall pass props to carousel component for defining content and further cus
     You declare CarouselContent component by passing the desired jsx elements as given in the example below:
       ```JSX
       const mainContent = <CarouselContent>
-        <img className="mainContent" src="/assets/clouds1.jpg"></img>
-        <img className="mainContent" src="/assets/clouds2.jpg"></img>
-        <img className="mainContent" src="/assets/clouds3.jpg"></img>
-        <img className="mainContent" src="/assets/clouds4.jpg"></img>
+        ...
         <img className="mainContent" src="/assets/clouds5.jpg"></img>
         <img className="mainContent" src="/assets/clouds6.jpg"></img>
         <video className="mainContent" autoPlay>
           <source src="/assets/clouds7.mp4" type="video/mp4"/>
         </video>
-        <img className="mainContent" src="/assets/clouds8.jpg"></img>
-        <img className="mainContent" src="/assets/clouds9.jpg"></img>
+        ...
       </CarouselContent>
       ```
       These elements can then be transformed into carousel content by passing the props children  
