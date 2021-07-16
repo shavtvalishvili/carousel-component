@@ -1,4 +1,5 @@
 import React from "react"
+import "./CarouselContent.css"
 
 const CarouselContent = (props) => {
   return (
