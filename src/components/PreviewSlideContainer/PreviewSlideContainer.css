@@ -1,0 +1,10 @@
+.PreviewSlideContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  padding: 3px;
+  transition: padding 50ms ease-in-out, filter 200ms ease-in-out;
+}
