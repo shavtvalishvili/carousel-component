@@ -1,9 +1,8 @@
 import React from "react"
 import "./NavigationButton.css"
+import * as K from "../../utilities/constants"
 
 const NavigationButton = ({direction, onInteractionStart, visible, fade}) => {
-  const RIGHT = -1;
-  const LEFT = 1;
   const style = {opacity: fade ? 0 : 1};
   if (!visible) style.display = "none";
 
@@ -11,10 +10,10 @@ const NavigationButton = ({direction, onInteractionStart, visible, fade}) => {
     <div
       onTouchStart={onInteractionStart}
       onMouseDown={onInteractionStart}
-      className={`NavigationButton ${direction === RIGHT? "right" : "left"}`}
+      className={`NavigationButton ${direction === K.RIGHT? "right" : "left"}`}
       style={style}
     >
-      {direction === LEFT ? '<' : '>'}
+      {direction === K.LEFT ? '<' : '>'}
     </div>
   )
 }
